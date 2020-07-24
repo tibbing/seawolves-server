@@ -1,13 +1,13 @@
 package models
 
-// PlayerType Todo
-type PlayerType int8
+// // PlayerType Todo
+// type PlayerType int8
 
-// Human player type
-const (
-	Human PlayerType = iota
-	Ai
-)
+// // Human player type
+// const (
+// 	Human PlayerType = iota
+// 	Ai
+// )
 
 // Player model
 type Player struct {

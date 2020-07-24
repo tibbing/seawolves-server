@@ -3,17 +3,18 @@ package models
 // Port model
 type Port struct {
 	modelImpl
-	Name     string
-	OwnerID  string
-	Position string
+	Name      string
+	OwnerID   string
+	PositionX int16
+	PositionY int16
 }
 
 // NewPort Creates a new port
-func NewPort(name, ownerID, position string) *Port {
+func NewPort(name string, position Position) *Port {
 	result := &Port{
-		Name:     name,
-		OwnerID:  ownerID,
-		Position: position,
+		Name:      name,
+		PositionX: position.X,
+		PositionY: position.Y,
 	}
 	result.SetID(name)
 	return result

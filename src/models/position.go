@@ -2,13 +2,13 @@ package models
 
 // Position model
 type Position struct {
-	X int8
-	Y int8
+	X int16
+	Y int16
 }
 
 // NewPosition Creates a new position
-func NewPosition(x, y int8) *Position {
-	result := &Position{
+func NewPosition(x, y int16) Position {
+	result := Position{
 		X: x,
 		Y: y,
 	}
