@@ -82,7 +82,7 @@ ENV GO111MODULE=auto
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
 
-WORKDIR /src
+# WORKDIR /src
 
 COPY keep-alive.sh /
 

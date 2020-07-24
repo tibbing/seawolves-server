@@ -23,5 +23,5 @@ func test() {
 	player := models.NewPlayer("Player1", models.Human)
 	factory := models.NewFactory(goldMine.GetID(), stockholm.GetID(), player.GetID())
 
-	print(factory.PortID)
+	print(factory.PortID + "\n")
 }

@@ -20,5 +20,5 @@ func (m *modelImpl) SetID(id string) {
 }
 
 func (m *modelImpl) SetRandomID() {
-	m.id = xid.New()
+	m.id = xid.New().String()
 }
