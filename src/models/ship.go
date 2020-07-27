@@ -7,6 +7,7 @@ type Ship struct {
 	Name    string
 	OwnerID string
 	Type    ShipType
+	Storage []Resource
 }
 
 // NewShip Creates a new ship

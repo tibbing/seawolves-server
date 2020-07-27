@@ -11,8 +11,8 @@ func Scandinavia() *models.Map {
 	silver := models.NewResourceType("Silver", 50, 10)
 	result.AddResourceType(silver)
 
-	result.AddFactoryType(models.NewFactoryType("GoldMine", gold.GetID()))
-	result.AddFactoryType(models.NewFactoryType("SilverMine", silver.GetID()))
+	result.AddFactoryType(models.NewFactoryType("GoldMine", gold.GetID(), 0.2))
+	result.AddFactoryType(models.NewFactoryType("SilverMine", silver.GetID(), 0.3))
 
 	stockholm := models.NewPort("Stockholm", models.NewPosition(200, 100))
 	result.AddPort(stockholm)

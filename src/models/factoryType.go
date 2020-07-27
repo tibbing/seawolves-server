@@ -3,15 +3,17 @@ package models
 // FactoryType model
 type FactoryType struct {
 	modelImpl
-	Name           string
-	ResourceTypeID string
+	Name                    string
+	ResourceTypeID          string
+	ProductionSpeedModifier float32
 }
 
 // NewFactoryType Creates a new factory type
-func NewFactoryType(name string, resourceTypeID string) FactoryType {
+func NewFactoryType(name string, resourceTypeID string, productionSpeedModifier float32) FactoryType {
 	result := FactoryType{
-		Name:           name,
-		ResourceTypeID: resourceTypeID,
+		Name:                    name,
+		ResourceTypeID:          resourceTypeID,
+		ProductionSpeedModifier: productionSpeedModifier,
 	}
 	result.SetID(name)
 	return result
