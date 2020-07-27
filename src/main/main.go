@@ -14,6 +14,7 @@ import (
 func main() {
 	currentmap := maps.Scandinavia()
 	player := models.NewPlayer("Player1", models.Human)
+	game := models.NewGame(currentmap.GetID(), []models.Player{*player})
 	factory := models.NewFactory(*currentmap, "GoldMine", "Stockholm", 0.7, player.GetID())
 	print(factory.PortID + "\n")
 	for k := range currentmap.GetFactoryTypes() {
@@ -21,7 +22,8 @@ func main() {
 	}
 
 	factory.UpdateStorage(*currentmap, 30)
-	print(factory.Storage.Amount)
+	print(game.String() + "\n")
+	print(factory.Storage.String() + "\n")
 	print("\n\n")
 
 }
