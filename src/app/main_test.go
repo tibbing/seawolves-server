@@ -9,19 +9,19 @@ import (
 
 func TestShouldStartNewGame(t *testing.T) {
 	player1 := models.NewPlayer("Player1", models.Human)
-	player2 := models.NewPlayer("Player1", models.Human)
+	player2 := models.NewPlayer("Player2", models.Human)
 	game := models.NewGame("TestMap", []models.Player{*player1, *player2})
 	if game.Turn != player1.GetID() {
 		t.Error("Expected it to be player 1's turn")
 	}
 	if len(game.Players) != 2 {
-		t.Error("Expected it to be 2 players")
+		t.Error("Expected it to be 2 players, but found " + string(len(game.Players)))
 	}
 }
 
 func TestShouldIncreaseResourcesInFactory(t *testing.T) {
 	currentmap := maps.Scandinavia()
-	factory := models.NewFactory(*currentmap, "GoldMine", "Stockholm", 0.7, "TestPlayer")
+	factory := models.NewFactory(*currentmap, "GoldMine", "Stockholm", 0.7, 0, "TestPlayer")
 	factory.UpdateStorage(*currentmap, 30)
 	t.Log(factory.Storage.String() + "\n")
 	if factory.Storage.Amount <= 0 {

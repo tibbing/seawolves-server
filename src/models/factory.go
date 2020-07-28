@@ -9,10 +9,11 @@ type Factory struct {
 	Storage                 Resource
 	UpdatedAt               int16
 	ProductionSpeedModifier float32
+	LocationID              int8
 }
 
 // NewFactory Creates a new factory
-func NewFactory(currentMap Map, factoryTypeID string, portID string, productionSpeedModifier float32, ownerID string) *Factory {
+func NewFactory(currentMap Map, factoryTypeID string, portID string, productionSpeedModifier float32, locationID int8, ownerID string) *Factory {
 	resourceTypeID := currentMap.FactoryTypes[factoryTypeID].ResourceTypeID
 	resourceType := currentMap.ResourceTypes[resourceTypeID]
 
@@ -23,6 +24,7 @@ func NewFactory(currentMap Map, factoryTypeID string, portID string, productionS
 		UpdatedAt:               0,
 		Storage:                 *NewResource(0, resourceType),
 		ProductionSpeedModifier: productionSpeedModifier,
+		LocationID:              locationID,
 	}
 	result.SetRandomID()
 	return result

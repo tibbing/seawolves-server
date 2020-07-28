@@ -3,17 +3,19 @@ package models
 // Player model
 type Player struct {
 	modelImpl
-	Name string
-	Type PlayerType
-	Day  int16
+	Name   string
+	Type   PlayerType
+	Day    int16
+	Fleets []Fleet
 }
 
 // NewPlayer Creates a new player
 func NewPlayer(name string, playerType PlayerType) *Player {
 	result := &Player{
-		Name: name,
-		Type: playerType,
-		Day:  0,
+		Name:   name,
+		Type:   playerType,
+		Day:    0,
+		Fleets: []Fleet{},
 	}
 	result.SetID(name)
 	return result
