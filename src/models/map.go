@@ -1,12 +1,14 @@
 package models
 
+import "fmt"
+
 // Map model
 type Map struct {
 	modelImpl
 	Name          string
 	Width         int16
 	Height        int16
-	Ports         map[string]*Port
+	PortTypes     map[string]*PortType
 	ResourceTypes map[string]ResourceType
 	FactoryTypes  map[string]FactoryType
 }
@@ -17,7 +19,7 @@ func NewMap(name string, width, height int16) *Map {
 		Name:          name,
 		Width:         width,
 		Height:        height,
-		Ports:         map[string]*Port{},
+		PortTypes:     map[string]*PortType{},
 		ResourceTypes: map[string]ResourceType{},
 		FactoryTypes:  map[string]FactoryType{},
 	}
@@ -26,48 +28,53 @@ func NewMap(name string, width, height int16) *Map {
 }
 
 // GetID Gets the ID
-func (u *Map) GetID() string {
-	return u.Name
+func (x *Map) GetID() string {
+	return x.Name
 }
 
-// AddPort Adds a port
-func (u *Map) AddPort(port *Port) {
-	u.Ports[port.GetID()] = port
+// AddPortType Adds a port
+func (x *Map) AddPortType(portType *PortType) {
+	x.PortTypes[portType.GetID()] = portType
 }
 
 // AddResourceType Adds a resource type
-func (u *Map) AddResourceType(resourceType ResourceType) {
-	u.ResourceTypes[resourceType.GetID()] = resourceType
+func (x *Map) AddResourceType(resourceType ResourceType) {
+	x.ResourceTypes[resourceType.GetID()] = resourceType
 }
 
 // AddFactoryType Adds a factory type
-func (u *Map) AddFactoryType(factoryType FactoryType) {
-	u.FactoryTypes[factoryType.GetID()] = factoryType
+func (x *Map) AddFactoryType(factoryType FactoryType) {
+	x.FactoryTypes[factoryType.GetID()] = factoryType
 }
 
 // GetPorts Lists all ports
-func (u *Map) GetPorts() []string {
-	keys := make([]string, 0, len(u.Ports))
-	for k := range u.Ports {
+func (x *Map) GetPorts() []string {
+	keys := make([]string, 0, len(x.PortTypes))
+	for k := range x.PortTypes {
 		keys = append(keys, k)
 	}
 	return keys
 }
 
 // GetResourceTypes Lists all resource types
-func (u *Map) GetResourceTypes() []string {
-	keys := make([]string, 0, len(u.ResourceTypes))
-	for k := range u.ResourceTypes {
+func (x *Map) GetResourceTypes() []string {
+	keys := make([]string, 0, len(x.ResourceTypes))
+	for k := range x.ResourceTypes {
 		keys = append(keys, k)
 	}
 	return keys
 }
 
 // GetFactoryTypes Lists all factory types
-func (u *Map) GetFactoryTypes() []string {
-	keys := make([]string, 0, len(u.FactoryTypes))
-	for k := range u.FactoryTypes {
+func (x *Map) GetFactoryTypes() []string {
+	keys := make([]string, 0, len(x.FactoryTypes))
+	for k := range x.FactoryTypes {
 		keys = append(keys, k)
 	}
 	return keys
+}
+
+func (x *Map) String() string {
+	return fmt.Sprintf("Name: %s,\n Width: %v,\n Height: %v,\n PortTypes: %v,\n ResourceTypes: %v,\n FactoryTypes: %v\n",
+		x.Name, x.Width, x.Height, len(x.PortTypes), len(x.ResourceTypes), len(x.FactoryTypes))
 }

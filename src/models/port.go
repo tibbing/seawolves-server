@@ -2,25 +2,15 @@ package models
 
 // Port model
 type Port struct {
-	modelImpl
-	Name      string
-	OwnerID   string
-	PositionX int16
-	PositionY int16
+	PortTypeID string
+	OwnerID    string
 }
 
 // NewPort Creates a new port
-func NewPort(name string, position Position) *Port {
+func NewPort(portTypeID, ownerID string) *Port {
 	result := &Port{
-		Name:      name,
-		PositionX: position.X,
-		PositionY: position.Y,
+		PortTypeID: portTypeID,
+		OwnerID:    ownerID,
 	}
-	result.SetID(name)
 	return result
-}
-
-// GetID Gets the ID
-func (u *Port) GetID() string {
-	return u.Name
 }
