@@ -11,6 +11,7 @@ type Game struct {
 	MapID   string
 	Started int64
 	Players []Player
+	Turn    string
 }
 
 // NewGame Creates a new game
@@ -19,6 +20,7 @@ func NewGame(mapID string, players []Player) *Game {
 		MapID:   mapID,
 		Started: time.Now().UTC().Unix(),
 		Players: players,
+		Turn:    players[0].GetID(),
 	}
 	result.SetRandomID()
 	return result
