@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"maps"
 	"models"
 	"testing"
@@ -26,4 +27,18 @@ func TestShouldIncreaseResourcesInFactory(t *testing.T) {
 	if factory.Storage.Amount <= 0 {
 		t.Error("Expected amount to have increased")
 	}
+}
+
+func TestShouldSerializeMap(t *testing.T) {
+	currentmap := maps.Scandinavia()
+	e, err := json.Marshal(currentmap)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(string(e) + "\n")
+
+	var result models.Map
+	json.Unmarshal([]byte(e), &result)
+	t.Logf("Deserialized: %s", result.String()+"\n")
 }
