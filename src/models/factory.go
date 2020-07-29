@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 // Factory model
 type Factory struct {
 	modelImpl
@@ -27,14 +29,26 @@ func NewFactory(currentMap Map, factoryTypeID string, portID string, productionS
 		LocationID:              locationID,
 	}
 	result.SetRandomID()
+	log.Infof("Creating factory %s", result.String())
+
 	return result
 }
 
 // UpdateStorage Updates storage of factory based on number of days passed
-func (m *Factory) UpdateStorage(currentMap Map, day int16) {
-	elapsedDays := day - m.UpdatedAt
-	factoryType := currentMap.FactoryTypes[m.FactoryTypeID]
-	produced := factoryType.ProductionSpeedModifier * m.ProductionSpeedModifier * float32(elapsedDays)
-	m.UpdatedAt = day
-	m.Storage.Amount += produced
+func (x *Factory) UpdateStorage(currentMap Map, day int16) {
+	elapsedDays := day - x.UpdatedAt
+	factoryType := currentMap.FactoryTypes[x.FactoryTypeID]
+	produced := factoryType.ProductionSpeedModifier * x.ProductionSpeedModifier * float32(elapsedDays)
+	x.UpdatedAt = day
+	x.Storage.Amount += produced
+}
+
+// GetID Gets the ID
+func (x *Factory) GetID() string {
+	return x.id
+}
+
+func (x *Factory) String() string {
+	return fmt.Sprintf("ID: %s, Type: %s PortID: %s, LocationID: %v, OwnerID: %s",
+		x.GetID(), x.FactoryTypeID, x.PortID, x.LocationID, x.OwnerID)
 }

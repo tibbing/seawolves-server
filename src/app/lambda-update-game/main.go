@@ -1,23 +1,44 @@
-package lambda-update-game
+package lambda
 
 import (
-	"fmt"
+	"maps"
+	"models"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-type Event struct {
+// UpdateGameEvent lambda event
+type UpdateGameEvent struct {
 	PlayerID string
-	GameID  string
-	Day  int16
+	GameID   string
+	Day      int16
 }
 
-type Response struct {
-	Message string
+// UpdateGameResponse lambda response
+type UpdateGameResponse struct {
+	Game string
 }
 
-func HandleLambdaEvent(event MyEvent) (MyResponse, error) {
-	return MyResponse{Message: fmt.Sprintf("%s is %d years old!", event.Name, event.Age)}, nil
+// HandleLambdaEvent lambda handler
+func HandleLambdaEvent(event UpdateGameEvent) (UpdateGameResponse, error) {
+	game, err := getGameByID(event.GameID)
+	if err != nil {
+		return UpdateGameResponse{Game: ""}, err
+	}
+	currentmap := maps.Scandinavia()
+	game.UpdateForPlayer(currentmap, event.PlayerID, event.Day)
+	return UpdateGameResponse{Game: "test"}, nil
+}
+
+func getGameByID(gameID string) (models.Game, error) {
+	currentmap := maps.Scandinavia()
+	player := models.NewPlayer("Player1", models.Human)
+	game := models.NewGame(currentmap.GetID(), []models.Player{*player})
+	port := models.NewPort("Stockholm", "")
+	factory := models.NewFactory(*currentmap, "GoldMine", "Stockholm", 0.7, 0, player.GetID())
+	port.AddFactory(*factory)
+	game.AddPort(port)
+	return *game, nil
 }
 
 func main() {
