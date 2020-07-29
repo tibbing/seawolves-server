@@ -3,11 +3,12 @@ FUNCTION_NAME=$1
 
 build () {
   echo "Building $1..."
-  GOOS=linux go build -o tmp_build ./app/$1/main.go
-  chmod +rwx ./tmp_build
+  GOOS=linux go build -o main ./app/$1/main.go
+  chmod +rwx ./main
   mkdir -p dist
-  zip ./dist/$1.zip ./tmp_build
-  rm ./tmp_build
+  rm -f ./dist/$1.zip
+  zip ./dist/$1.zip ./main
+  rm ./main
   chmod +rwx ./dist/$1.zip
 }
 
