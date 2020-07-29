@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"dynamodb"
 	"encoding/json"
 	"http-handler"
 	"maps"
@@ -41,7 +42,7 @@ func createHandler(request events.APIGatewayProxyRequest) (interface{}, error) {
 	var event UpdateGameEvent
 	json.Unmarshal([]byte(request.Body), &event)
 
-	game, err := getGameByID(event.GameID)
+	game, err := dynamodb.GetGameByID(event.GameID)
 	if err != nil {
 		return UpdateGameResponse{Game: nil}, err
 	}
@@ -49,17 +50,6 @@ func createHandler(request events.APIGatewayProxyRequest) (interface{}, error) {
 	game.UpdateForPlayer(currentmap, event.PlayerID, event.Day)
 
 	return UpdateGameResponse{Game: &game}, nil
-}
-
-func getGameByID(gameID string) (models.Game, error) {
-	currentmap := maps.Scandinavia()
-	player := models.NewPlayer("Player1", models.Human)
-	game := models.NewGame(currentmap.GetID(), []models.Player{*player})
-	port := models.NewPort("Stockholm", "")
-	factory := models.NewFactory(*currentmap, "GoldMine", "Stockholm", 0.7, 0, player.GetID())
-	port.AddFactory(*factory)
-	game.AddPort(port)
-	return *game, nil
 }
 
 func main() {
