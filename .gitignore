@@ -337,3 +337,5 @@ debug
 
 src/github.com/*
 src/gopkg.in/*
+src/google.golang.org/*
+src/dist/*
