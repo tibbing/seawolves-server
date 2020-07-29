@@ -334,3 +334,6 @@ ASALocalRun/
 out
 pkg
 debug
+
+src/github.com/*
+src/gopkg.in/*
