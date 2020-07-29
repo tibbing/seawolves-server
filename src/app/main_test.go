@@ -5,11 +5,7 @@ import (
 	"maps"
 	"models"
 	"testing"
-
-	"github.com/op/go-logging"
 )
-
-var info = logging.MustGetLogger("info")
 
 func TestShouldStartNewGame(t *testing.T) {
 	player1 := models.NewPlayer("Player1", models.Human)
