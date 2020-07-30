@@ -56,10 +56,12 @@ func (x *Game) UpdateForPlayer(currentMap *Map, playerID string, day int16) erro
 		err := errors.New("Invalid day provided: " + string(day))
 		return err
 	}
-	for _, port := range x.Ports {
-		for _, factory := range port.Factories {
+	for i, port := range x.Ports {
+		for j, factory := range port.Factories {
 			if factory.OwnerID == playerID {
 				factory.UpdateStorage(*currentMap, day)
+				port.Factories[j] = factory
+				x.Ports[i] = port
 			}
 		}
 	}

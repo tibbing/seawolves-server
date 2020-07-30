@@ -41,7 +41,8 @@ func (x *Factory) UpdateStorage(currentMap Map, day int16) {
 	produced := factoryType.ProductionSpeedModifier * x.ProductionSpeedModifier * float32(elapsedDays)
 	x.UpdatedAt = day
 	x.Storage.Amount += produced
-	log.Infof("Adding %v to storage in factory %s, new value is %f %s", produced, x.GetID(), x.Storage.Amount, x.Storage.Type.GetID())
+	log.Infof("Adding %v to storage in factory %s, new value is %f %s. Elapsed days: %v",
+		produced, x.String(), x.Storage.Amount, x.Storage.Type.GetID(), elapsedDays)
 }
 
 // GetID Gets the ID

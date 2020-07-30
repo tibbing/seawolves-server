@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -10,8 +11,8 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
-func getTestEvent() events.APIGatewayProxyRequest {
-	jsonFile, err := os.Open("valid_event.json")
+func getTestRequest(event UpdateGameEvent) events.APIGatewayProxyRequest {
+	jsonFile, err := os.Open("request.json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -19,22 +20,56 @@ func getTestEvent() events.APIGatewayProxyRequest {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var req events.APIGatewayProxyRequest
 	json.Unmarshal(byteValue, &req)
+	eventBody, err := json.Marshal(event)
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Body = string(eventBody)
+
 	return req
 }
 
-func TestValidEvent(t *testing.T) {
-	testEvent := getTestEvent()
-	response, err := CreateHandler(testEvent)
+func makeRequest(event UpdateGameEvent) (UpdateGameResponse, error) {
+	var responseTyped UpdateGameResponse
+	req := getTestRequest(event)
+	response, err := CreateHandler(req)
 	if err != nil {
-		t.Error(err.Error())
-		return
+		return responseTyped, err
 	}
-	t.Log(response)
 
 	responseTyped, ok := response.(UpdateGameResponse)
 	if ok == false {
-		t.Error("Invalid response")
-		return
+		return responseTyped, errors.New("Invalid response")
 	}
-	t.Log(responseTyped.Game.Ports["Stockholm"].Factories[0].Storage.String())
+
+	return responseTyped, nil
+}
+func TestValidEvent(t *testing.T) {
+	event := UpdateGameEvent{
+		GameID:   "Game1",
+		PlayerID: "Player1",
+		Day:      0,
+	}
+	response, err := makeRequest(event)
+	if err != nil {
+		t.Errorf("Request failed (day 0): %s", err.Error())
+	}
+
+	if response.Game.Ports["Stockholm"].Factories[0].Storage.Amount != 0 {
+		t.Errorf("Expected storage to be 0, but was %f", response.Game.Ports["Stockholm"].Factories[0].Storage.Amount)
+	}
+
+	event = UpdateGameEvent{
+		GameID:   "Game1",
+		PlayerID: "Player1",
+		Day:      30,
+	}
+	response, err = makeRequest(event)
+	if err != nil {
+		t.Errorf("Request failed (day 30): %s", err.Error())
+	}
+
+	if response.Game.Ports["Stockholm"].Factories[0].Storage.Amount <= 0 {
+		t.Error("Expected storage to be greater than 0")
+	}
 }
