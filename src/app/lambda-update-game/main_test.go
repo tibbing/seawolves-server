@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dynamodb"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -32,7 +33,10 @@ func getTestRequest(event UpdateGameEvent) events.APIGatewayProxyRequest {
 func makeRequest(event UpdateGameEvent) (UpdateGameResponse, error) {
 	var responseTyped UpdateGameResponse
 	req := getTestRequest(event)
-	response, err := CreateHandler(req)
+	dependencies := Dependencies{
+		dynamodbClient: &dynamodb.MockClient{},
+	}
+	response, err := CreateHandler(&dependencies)(req)
 	if err != nil {
 		return responseTyped, err
 	}
