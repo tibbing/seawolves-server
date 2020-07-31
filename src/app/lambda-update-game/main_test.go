@@ -30,13 +30,18 @@ func getTestRequest(event UpdateGameEvent) events.APIGatewayProxyRequest {
 	return req
 }
 
+var dependencies *Dependencies
+
 func makeRequest(event UpdateGameEvent) (UpdateGameResponse, error) {
 	var responseTyped UpdateGameResponse
 	req := getTestRequest(event)
-	dependencies := Dependencies{
-		dynamodbClient: &dynamodb.MockClient{},
+	if dependencies == nil {
+		dependencies = &Dependencies{
+			dynamodbClient: &dynamodb.MockClient{},
+		}
 	}
-	response, err := CreateHandler(&dependencies)(req)
+
+	response, err := CreateHandler(dependencies)(req)
 	if err != nil {
 		return responseTyped, err
 	}
@@ -50,7 +55,7 @@ func makeRequest(event UpdateGameEvent) (UpdateGameResponse, error) {
 }
 func TestValidEvent(t *testing.T) {
 	event := UpdateGameEvent{
-		GameID:   "Game1",
+		GameID:   "TestGame",
 		PlayerID: "Player1",
 		Day:      0,
 	}
@@ -64,7 +69,7 @@ func TestValidEvent(t *testing.T) {
 	}
 
 	event = UpdateGameEvent{
-		GameID:   "Game1",
+		GameID:   "TestGame",
 		PlayerID: "Player1",
 		Day:      30,
 	}
