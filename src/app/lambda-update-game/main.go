@@ -39,7 +39,7 @@ type UpdateGameResponse struct {
 
 // Dependencies Lambda dependencies
 type Dependencies struct {
-	dynamodbClient dynamodb.Client
+	dynamodbClient dynamodb.DDBInstance
 }
 
 // CreateHandler creates the event handler
