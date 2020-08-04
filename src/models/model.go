@@ -12,13 +12,13 @@ type Model interface {
 }
 
 type modelImpl struct {
-	id string
+	ID string
 }
 
 func (m *modelImpl) SetID(id string) {
-	m.id = id
+	m.ID = id
 }
 
 func (m *modelImpl) SetRandomID() {
-	m.id = xid.New().String()
+	m.ID = xid.New().String()
 }

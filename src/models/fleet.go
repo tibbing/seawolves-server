@@ -21,5 +21,5 @@ func NewFleet(name, ownerID string, ships []Ship) *Fleet {
 
 // GetID Gets the ID
 func (u *Fleet) GetID() string {
-	return u.id
+	return u.ID
 }

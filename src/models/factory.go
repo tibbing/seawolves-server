@@ -47,7 +47,7 @@ func (x *Factory) UpdateStorage(currentMap Map, day int16) {
 
 // GetID Gets the ID
 func (x *Factory) GetID() string {
-	return x.id
+	return x.ID
 }
 
 func (x *Factory) String() string {

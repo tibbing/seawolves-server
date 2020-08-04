@@ -41,7 +41,7 @@ func NewGame(mapID string, players []Player) *Game {
 
 // GetID Gets the ID
 func (x *Game) GetID() string {
-	return x.id
+	return x.ID
 }
 
 // AddPort Adds a port to the game

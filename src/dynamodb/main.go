@@ -59,7 +59,6 @@ func (q *DBInstance) GetGameByID(gameID string) (models.Game, error) {
 	if err != nil {
 		panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
 	}
-	game.SetID(gameID)
 
 	// fmt.Printf("%s\n", result.Item)
 	// fmt.Printf("%s\n", game.String())
