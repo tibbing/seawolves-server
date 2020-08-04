@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"github.com/op/go-logging"
 )
 
@@ -24,47 +24,45 @@ func init() {
 	logging.SetBackend(backendFormatter)
 }
 
-// DDBInstance interface
-type DDBInstance interface {
-	// GetGameByID() <-chan struct{}
-	GetGameByID(gameID string) (models.Game, error)
+// DBInstance the DynamoDB instance
+type DBInstance struct {
+	Client dynamodbiface.DynamoDBAPI
 }
 
-// Client mocked dynamodb client
-type Client struct {
-}
-
-// GetGameByID gets mocked game by ID
-func (m *Client) GetGameByID(gameID string) (models.Game, error) {
+// GetGameByID returns a game by ID
+func (q *DBInstance) GetGameByID(gameID string) (models.Game, error) {
 	var game models.Game
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
 
-	svc := dynamodb.New(sess)
-	tableName := "Games"
-
-	result, err := svc.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String(tableName),
+	params := dynamodb.GetItemInput{
+		TableName: aws.String("Games"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"GameID": {
 				S: aws.String(gameID),
 			},
 		},
-	})
+	}
+
+	result, err := q.Client.GetItem(&params)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		return game, err
 	}
 	if result.Item == nil {
 		return game, errors.New("Could not find gameID '" + gameID + "'")
 	}
 
-	item := models.Game{}
+	log.Debugf("Found game in DB")
 
-	err = dynamodbattribute.UnmarshalMap(result.Item, &item)
+	game = models.Game{}
+
+	err = dynamodbattribute.UnmarshalMap(result.Item, &game)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
 	}
+	game.SetID(gameID)
+
+	// fmt.Printf("%s\n", result.Item)
+	// fmt.Printf("%s\n", game.String())
+
 	return game, nil
 }

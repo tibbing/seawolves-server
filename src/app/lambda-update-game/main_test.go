@@ -37,7 +37,9 @@ func makeRequest(event UpdateGameEvent) (UpdateGameResponse, error) {
 	req := getTestRequest(event)
 	if dependencies == nil {
 		dependencies = &Dependencies{
-			dynamodbClient: &dynamodb.MockClient{},
+			dynamodbClient: dynamodb.DBInstance{
+				Client: dynamodb.MockedClient{Resp: dynamodb.GetMockedGameOutput()},
+			},
 		}
 	}
 

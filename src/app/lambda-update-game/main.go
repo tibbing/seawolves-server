@@ -4,6 +4,7 @@ import (
 	"context"
 	"dynamodb"
 	"encoding/json"
+	"errors"
 	"http-handler"
 	"maps"
 	"models"
@@ -39,7 +40,7 @@ type UpdateGameResponse struct {
 
 // Dependencies Lambda dependencies
 type Dependencies struct {
-	dynamodbClient dynamodb.DDBInstance
+	dynamodbClient dynamodb.DBInstance
 }
 
 // CreateHandler creates the event handler
@@ -52,7 +53,11 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 		if err != nil {
 			return UpdateGameResponse{Game: nil}, err
 		}
+		if game.MapID == "" {
+			return UpdateGameResponse{Game: nil}, errors.New("Invalid game: " + event.GameID)
+		}
 		currentmap := maps.Scandinavia()
+
 		game.UpdateForPlayer(currentmap, event.PlayerID, event.Day)
 		log.Info(game.Ports["Stockholm"].Factories[0].Storage.String())
 
@@ -67,7 +72,9 @@ func main() {
 // Set up dependencies
 func createDefaultHandler() func(request events.APIGatewayProxyRequest) (interface{}, error) {
 	dependencies := Dependencies{
-		dynamodbClient: &dynamodb.MockClient{},
+		dynamodbClient: dynamodb.DBInstance{
+			Client: dynamodb.MockedClient{Resp: dynamodb.GetMockedGameOutput()},
+		},
 	}
 	return CreateHandler(&dependencies)
 }
