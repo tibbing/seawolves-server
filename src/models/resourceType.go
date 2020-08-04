@@ -4,12 +4,12 @@ package models
 type ResourceType struct {
 	modelImpl
 	Name         string
-	InitialValue int8
-	Weight       int8
+	InitialValue int
+	Weight       int
 }
 
 // NewResourceType Creates a new resource type
-func NewResourceType(name string, initialValue int8, weight int8) ResourceType {
+func NewResourceType(name string, initialValue int, weight int) ResourceType {
 	result := ResourceType{
 		Name:         name,
 		InitialValue: initialValue,

@@ -6,15 +6,15 @@ import "fmt"
 type Map struct {
 	modelImpl
 	Name          string
-	Width         int16
-	Height        int16
+	Width         int
+	Height        int
 	PortTypes     map[string]*PortType
 	ResourceTypes map[string]ResourceType
 	FactoryTypes  map[string]FactoryType
 }
 
 // NewMap Creates a new map
-func NewMap(name string, width, height int16) *Map {
+func NewMap(name string, width, height int) *Map {
 	result := &Map{
 		Name:          name,
 		Width:         width,

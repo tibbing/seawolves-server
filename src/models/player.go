@@ -5,7 +5,7 @@ type Player struct {
 	modelImpl
 	Name   string
 	Type   PlayerType
-	Day    int16
+	Day    int
 	Fleets []Fleet
 }
 

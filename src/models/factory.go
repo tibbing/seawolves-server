@@ -9,13 +9,13 @@ type Factory struct {
 	FactoryTypeID           string
 	PortID                  string
 	Storage                 Resource
-	UpdatedAt               int16
+	UpdatedAt               int
 	ProductionSpeedModifier float32
-	LocationID              int8
+	LocationID              int
 }
 
 // NewFactory Creates a new factory
-func NewFactory(currentMap Map, factoryTypeID string, portID string, productionSpeedModifier float32, locationID int8, ownerID string) *Factory {
+func NewFactory(currentMap Map, factoryTypeID string, portID string, productionSpeedModifier float32, locationID int, ownerID string) *Factory {
 	resourceTypeID := currentMap.FactoryTypes[factoryTypeID].ResourceTypeID
 	resourceType := currentMap.ResourceTypes[resourceTypeID]
 
@@ -35,7 +35,7 @@ func NewFactory(currentMap Map, factoryTypeID string, portID string, productionS
 }
 
 // UpdateStorage Updates storage of factory based on number of days passed
-func (x *Factory) UpdateStorage(currentMap Map, day int16) {
+func (x *Factory) UpdateStorage(currentMap Map, day int) {
 	elapsedDays := day - x.UpdatedAt
 	factoryType := currentMap.FactoryTypes[x.FactoryTypeID]
 	produced := factoryType.ProductionSpeedModifier * x.ProductionSpeedModifier * float32(elapsedDays)

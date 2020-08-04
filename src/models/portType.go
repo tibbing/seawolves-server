@@ -4,8 +4,8 @@ package models
 type PortType struct {
 	modelImpl
 	Name      string
-	PositionX int16
-	PositionY int16
+	PositionX int
+	PositionY int
 }
 
 // NewPortType Creates a new port type

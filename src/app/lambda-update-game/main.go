@@ -30,7 +30,7 @@ func init() {
 type UpdateGameEvent struct {
 	PlayerID string
 	GameID   string
-	Day      int16
+	Day      int
 }
 
 // UpdateGameResponse lambda response

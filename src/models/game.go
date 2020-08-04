@@ -51,7 +51,7 @@ func (x *Game) AddPort(port *Port) error {
 }
 
 // UpdateForPlayer Updates the game for a given player and day
-func (x *Game) UpdateForPlayer(currentMap *Map, playerID string, day int16) error {
+func (x *Game) UpdateForPlayer(currentMap *Map, playerID string, day int) error {
 	log.Debugf("Updating game %s at day %v for player %s", x.GetID(), day, playerID)
 	if day <= x.Players[playerID].Day {
 		err := errors.New("Invalid day provided: " + string(day))

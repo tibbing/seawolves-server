@@ -1,7 +1,7 @@
 package models
 
 // PlayerType model
-type PlayerType int8
+type PlayerType int
 
 // Human or AI
 const (

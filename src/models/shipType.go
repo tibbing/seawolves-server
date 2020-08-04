@@ -4,13 +4,13 @@ package models
 type ShipType struct {
 	modelImpl
 	Name             string
-	Speed            int8
-	ResourceCapacity int8
-	ManCapacity      int8
+	Speed            int
+	ResourceCapacity int
+	ManCapacity      int
 }
 
 // NewShipType Creates a new ship type
-func NewShipType(name string, speed, resourceCapacity, manCapacity int8) ShipType {
+func NewShipType(name string, speed, resourceCapacity, manCapacity int) ShipType {
 	result := ShipType{
 		Name:             name,
 		Speed:            speed,
