@@ -61,6 +61,8 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 		game.UpdateForPlayer(currentmap, event.PlayerID, event.Day)
 		log.Info(game.Ports["Stockholm"].Factories[0].Storage.String())
 
+		dependencies.dynamodbClient.UpdateGame(game)
+
 		return UpdateGameResponse{Game: &game}, nil
 	}
 }

@@ -1,6 +1,7 @@
 package dynamodb
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"models"
@@ -27,6 +28,36 @@ func init() {
 // DBInstance the DynamoDB instance
 type DBInstance struct {
 	Client dynamodbiface.DynamoDBAPI
+}
+
+// UpdateGame updates game state in DynamoDB
+func (q *DBInstance) UpdateGame(game models.Game) error {
+
+	var inInterface map[string]interface{}
+	inrec, _ := json.Marshal(game)
+	log.Debug(string(inrec) + "\n")
+	json.Unmarshal(inrec, &inInterface)
+	updateExpr := buildUpdateExpression(inInterface, "", "")
+	exprAttrValues := buildExpressionAttributeValues(inInterface, "")
+	// exprAttrValues, _ := dynamodbattribute.MarshalMap(inInterface)
+
+	// fmt.Println(fmt.Sprintf("ExpressionAttributeValues %v", exprAttrValues))
+	// fmt.Println(fmt.Sprintf("updateExpr %s", updateExpr))
+
+	params := dynamodb.UpdateItemInput{
+		TableName:                 aws.String("Games"),
+		UpdateExpression:          &updateExpr,
+		ExpressionAttributeValues: exprAttrValues,
+		ReturnValues:              aws.String("UPDATED_NEW"),
+		Key: map[string]*dynamodb.AttributeValue{
+			"GameID": {
+				S: aws.String(game.GetID()),
+			},
+		},
+	}
+
+	_, err := q.Client.UpdateItem(&params)
+	return err
 }
 
 // GetGameByID returns a game by ID

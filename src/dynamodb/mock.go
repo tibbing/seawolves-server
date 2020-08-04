@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 )
 
+// MockedClient represents a mocked DynamoDB Client for testing
 type MockedClient struct {
 	dynamodbiface.DynamoDBAPI
 	Resp dynamodb.GetItemOutput
@@ -64,4 +65,10 @@ func (m MockedClient) GetItem(in *dynamodb.GetItemInput) (*dynamodb.GetItemOutpu
 	// 	return item, nil
 	// }
 	return &m.Resp, nil
+}
+
+// UpdateItem mocked implementation of UpdateItem
+func (m MockedClient) UpdateItem(in *dynamodb.UpdateItemInput) (*dynamodb.UpdateItemOutput, error) {
+	output := dynamodb.UpdateItemOutput{}
+	return &output, nil
 }
