@@ -18,7 +18,7 @@
   "settings": {
     "terminal.integrated.shell.linux": "/bin/bash",
     "go.inferGopath": true,
-    "go.useLanguageServer": true,
+    "go.useLanguageServer": false,
     "go.formatOnSave": true
   },
   "postCreateCommand": "go mod download",
