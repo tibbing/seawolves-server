@@ -1,3 +1,16 @@
 {
-  "go.inferGopath": false
+  "go.inferGopath": false,
+  "files.exclude": {
+    "**/.git": true, // this is a default value
+    "**/.DS_Store": true, // this is a default value
+    "**/node_modules": true, // this excludes all folders 
+    "node_modules": true, // this excludes the folder 
+    "github.com": true // this excludes the folder 
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/github.com/*/**": true
+  }
 }
