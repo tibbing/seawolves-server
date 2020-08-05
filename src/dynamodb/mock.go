@@ -28,10 +28,10 @@ func getNewMockedGame() models.Game {
 	return game
 }
 
-// GetMockedGameOutput returns mocked game as dynamodb GetItem output
-func GetMockedGameOutput() dynamodb.GetItemOutput {
+// ToGetItemOutput returns mocked game as dynamodb GetItem output
+func ToGetItemOutput(data interface{}) dynamodb.GetItemOutput {
 	var inInterface map[string]interface{}
-	inrec, _ := json.Marshal(getNewMockedGame())
+	inrec, _ := json.Marshal(data)
 	log.Debug(string(inrec) + "\n")
 	json.Unmarshal(inrec, &inInterface)
 

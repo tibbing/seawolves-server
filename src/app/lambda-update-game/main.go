@@ -75,7 +75,7 @@ func main() {
 func createDefaultHandler() func(request events.APIGatewayProxyRequest) (interface{}, error) {
 	dependencies := Dependencies{
 		dynamodbClient: dynamodb.DBInstance{
-			Client: dynamodb.MockedClient{Resp: dynamodb.GetMockedGameOutput()},
+			Client: dynamodb.MockedClient{Resp: dynamodb.ToGetItemOutput(getNewMockedGame())},
 		},
 	}
 	return CreateHandler(&dependencies)

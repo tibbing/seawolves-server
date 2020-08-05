@@ -1,6 +1,7 @@
 package dynamodb
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -17,7 +18,7 @@ func buildUpdateExpression(input map[string]interface{}, parentName, exprParentN
 		keyName := strings.Join([]string{":", exprParentName, strings.ToLower(k)}, "")
 
 		switch t := v.(type) {
-		case string, bool, int:
+		case string, bool, int, float32, float64:
 			currAttrName := k
 			if len(parentName) > 0 {
 				currAttrName = strings.Join([]string{parentName, currAttrName}, ".")
@@ -59,9 +60,14 @@ func buildExpressionAttributeValues(input map[string]interface{}, parentName str
 				BOOL: aws.Bool(t),
 			}
 		case int:
-			i := strconv.Itoa(t)
+			str := strconv.Itoa(t)
 			m[keyName] = &dynamodb.AttributeValue{
-				N: aws.String(i),
+				N: aws.String(str),
+			}
+		case float32, float64:
+			str := fmt.Sprintf("%f", t)
+			m[keyName] = &dynamodb.AttributeValue{
+				N: aws.String(str),
 			}
 			// case []interface{}:
 			// 	nextName := strings.TrimPrefix(t, ":")

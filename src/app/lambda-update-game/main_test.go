@@ -38,7 +38,7 @@ func makeRequest(event UpdateGameEvent) (UpdateGameResponse, error) {
 	if dependencies == nil {
 		dependencies = &Dependencies{
 			dynamodbClient: dynamodb.DBInstance{
-				Client: dynamodb.MockedClient{Resp: dynamodb.GetMockedGameOutput()},
+				Client: dynamodb.MockedClient{Resp: dynamodb.ToGetItemOutput(getNewMockedGame())},
 			},
 		}
 	}
@@ -55,7 +55,7 @@ func makeRequest(event UpdateGameEvent) (UpdateGameResponse, error) {
 
 	return responseTyped, nil
 }
-func TestValidEvent(t *testing.T) {
+func TestUpdateDay0(t *testing.T) {
 	event := UpdateGameEvent{
 		GameID:   "TestGame",
 		PlayerID: "Player1",
@@ -69,13 +69,15 @@ func TestValidEvent(t *testing.T) {
 	if response.Game.Ports["Stockholm"].Factories[0].Storage.Amount != 0 {
 		t.Errorf("Expected storage to be 0, but was %f", response.Game.Ports["Stockholm"].Factories[0].Storage.Amount)
 	}
+}
 
-	event = UpdateGameEvent{
+func TestUpdateDay30(t *testing.T) {
+	event := UpdateGameEvent{
 		GameID:   "TestGame",
 		PlayerID: "Player1",
 		Day:      30,
 	}
-	response, err = makeRequest(event)
+	response, err := makeRequest(event)
 	if err != nil {
 		t.Errorf("Request failed (day 30): %s", err.Error())
 	}
