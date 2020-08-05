@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -52,9 +53,9 @@ func (x *Game) AddPort(port *Port) error {
 
 // UpdateForPlayer Updates the game for a given player and day
 func (x *Game) UpdateForPlayer(currentMap *Map, playerID string, day int) error {
-	log.Debugf("Updating game %s at day %v for player %s", x.GetID(), day, playerID)
+	log.Debugf("Updating game %s at day %v (current %v) for player %s", x.GetID(), day, x.Players[playerID].Day, playerID)
 	if day <= x.Players[playerID].Day {
-		err := errors.New("Invalid day provided: " + string(day))
+		err := errors.New("Invalid day provided: " + strconv.Itoa(day))
 		return err
 	}
 	for i, port := range x.Ports {

@@ -53,13 +53,18 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 		if err != nil {
 			return UpdateGameResponse{Game: nil}, err
 		}
-		if game.MapID == "" {
+		if game.ID == "" {
 			return UpdateGameResponse{Game: nil}, errors.New("Invalid game: " + event.GameID)
 		}
-		currentmap := maps.Scandinavia()
+		currentmap, err := maps.GetMapByID(game.MapID)
+		if err != nil {
+			return UpdateGameResponse{Game: nil}, err
+		}
 
-		game.UpdateForPlayer(currentmap, event.PlayerID, event.Day)
-		log.Info(game.Ports["Stockholm"].Factories[0].Storage.String())
+		err = game.UpdateForPlayer(&currentmap, event.PlayerID, event.Day)
+		if err != nil {
+			return UpdateGameResponse{Game: nil}, err
+		}
 
 		dependencies.dynamodbClient.UpdateGame(game)
 
@@ -75,7 +80,7 @@ func main() {
 func createDefaultHandler() func(request events.APIGatewayProxyRequest) (interface{}, error) {
 	dependencies := Dependencies{
 		dynamodbClient: dynamodb.DBInstance{
-			Client: dynamodb.MockedClient{Resp: dynamodb.ToGetItemOutput(getNewMockedGame())},
+			Client: dynamodb.MockedClient{MockedResponse: dynamodb.ToGetItemOutput(getNewMockedGame())},
 		},
 	}
 	return CreateHandler(&dependencies)

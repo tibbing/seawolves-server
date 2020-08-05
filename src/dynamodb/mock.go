@@ -14,7 +14,7 @@ import (
 // MockedClient represents a mocked DynamoDB Client for testing
 type MockedClient struct {
 	dynamodbiface.DynamoDBAPI
-	Resp dynamodb.GetItemOutput
+	MockedResponse dynamodb.GetItemOutput
 }
 
 func getNewMockedGame() models.Game {
@@ -64,7 +64,7 @@ func (m MockedClient) GetItem(in *dynamodb.GetItemInput) (*dynamodb.GetItemOutpu
 	// 	item.SetItem(map[string]*dynamodb.AttributeValue{})
 	// 	return item, nil
 	// }
-	return &m.Resp, nil
+	return &m.MockedResponse, nil
 }
 
 // UpdateItem mocked implementation of UpdateItem
