@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"models"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -92,14 +93,14 @@ func TestUpdatePreviousDay(t *testing.T) {
 	event := UpdateGameEvent{
 		GameID:   "TestGame",
 		PlayerID: "Player1",
-		Day:      0,
+		Day:      20,
 	}
 
 	gameState := getNewMockedGame()
 	gameState.Players["Player1"].Day = 30
 
 	_, err := makeRequest(event, gameState)
-	if err == nil {
+	if err == nil || !strings.Contains(fmt.Sprintf("%s", err), "Invalid day") {
 		t.Error("Expected request to fail")
 		return
 	}
