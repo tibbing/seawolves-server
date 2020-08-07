@@ -1,14 +1,14 @@
 package main
 
 import (
-	"apigw"
 	"context"
-	"dynamodb"
 	"encoding/json"
 	"fmt"
-	"http-handler"
-	"maps"
-	"models"
+	"lib/apigw"
+	"lib/dynamodb"
+	"lib/http-handler"
+	"lib/maps"
+	"lib/models"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"

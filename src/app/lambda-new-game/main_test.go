@@ -1,9 +1,9 @@
 package main
 
 import (
-	"apigw"
-	"dynamodb"
 	"errors"
+	"lib/apigw"
+	"lib/dynamodb"
 	"testing"
 )
 

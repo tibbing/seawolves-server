@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"models"
+	"lib/models"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"

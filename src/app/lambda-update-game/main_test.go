@@ -1,12 +1,12 @@
 package main
 
 import (
-	"apigw"
-	"dynamodb"
 	"errors"
 	"fmt"
-	"maps"
-	"models"
+	"lib/apigw"
+	"lib/dynamodb"
+	"lib/maps"
+	"lib/models"
 	"strings"
 	"testing"
 )

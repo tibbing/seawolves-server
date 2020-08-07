@@ -2,7 +2,7 @@ package maps
 
 import (
 	"encoding/json"
-	"models"
+	"lib/models"
 	"testing"
 )
 

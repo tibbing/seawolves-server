@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"dynamodb"
 	"encoding/json"
 	"errors"
-	"http-handler"
-	"maps"
-	"models"
+	"lib/dynamodb"
+	"lib/http-handler"
+	"lib/maps"
+	"lib/models"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"

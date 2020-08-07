@@ -2,8 +2,8 @@ package dynamodb
 
 import (
 	"encoding/json"
-	"maps"
-	"models"
+	"lib/maps"
+	"lib/models"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 

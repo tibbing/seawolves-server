@@ -1,6 +1,6 @@
 package maps
 
-import "models"
+import "lib/models"
 
 // Scandinavia Creates an instance of the map Scandinavia
 func Scandinavia() *models.Map {

@@ -2,7 +2,7 @@ package maps
 
 import (
 	"errors"
-	"models"
+	"lib/models"
 )
 
 // GetMapByID returns a map instance by ID

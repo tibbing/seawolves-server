@@ -1,11 +1,11 @@
 package main
 
 import (
-	"apigw"
-	"dynamodb"
 	"errors"
-	"maps"
-	"models"
+	"lib/apigw"
+	"lib/dynamodb"
+	"lib/maps"
+	"lib/models"
 )
 
 func getNewMockedGame() models.Game {
