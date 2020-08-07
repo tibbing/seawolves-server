@@ -3,22 +3,18 @@ package models
 // Ship model
 type Ship struct {
 	modelImpl
-	ID      string
 	Name    string
-	OwnerID string
-	Type    ShipType
+	Type    string
 	Storage []Resource
 }
 
 // NewShip Creates a new ship
-func NewShip(id, name, ownerID string, shipType ShipType) *Ship {
+func NewShip(name string, shipType string) *Ship {
 	result := &Ship{
-		ID:      id,
-		Name:    name,
-		OwnerID: ownerID,
-		Type:    shipType,
+		Name: name,
+		Type: shipType,
 	}
-	result.SetID(id)
+	result.SetRandomID()
 	return result
 }
 

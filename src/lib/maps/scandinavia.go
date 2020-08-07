@@ -19,5 +19,10 @@ func Scandinavia() *models.Map {
 	goteborg := models.NewPortType("Göteborg", models.NewPosition(140, 100))
 	result.AddPortType(goteborg)
 
+	result.AddShipType(models.NewShipType("Brig", 30, 200, 80, 300))
+	result.AddShipType(models.NewShipType("Fluyt", 5, 2000, 200, 600))
+	result.AddShipType(models.NewShipType("Corvette", 20, 1000, 500, 1000))
+	result.AddShipType(models.NewShipType("Galleon", 10, 1500, 800, 5000))
+
 	return result
 }

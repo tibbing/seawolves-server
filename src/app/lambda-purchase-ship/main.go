@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"errors"
+	"fmt"
+	"lib/apigw"
 	"lib/dynamodb"
 	"lib/http-handler"
 	"lib/maps"
@@ -57,13 +58,41 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 		if err != nil {
 			return response, err
 		}
-		if game.ID == "" {
-			return PurchaseShipResponse{Game: nil}, errors.New("Invalid game: " + event.GameID)
+
+		playerID, err := apigw.GetUserID(request)
+		if err != nil {
+			return PurchaseShipResponse{Game: nil}, err
 		}
-		_, err = maps.GetMapByID(game.MapID)
+
+		if game.ID == "" {
+			return PurchaseShipResponse{Game: nil}, fmt.Errorf("Invalid game: %s", event.GameID)
+		}
+		currentMap, err := maps.GetMapByID(game.MapID)
 		if err != nil {
 			return response, err
 		}
+
+		port := game.Ports[event.PortID]
+		if port == nil {
+			return PurchaseShipResponse{Game: nil}, fmt.Errorf("Invalid port: %s", event.PortID)
+		}
+
+		shipyard := port.Shipyard
+		if shipyard == nil {
+			return PurchaseShipResponse{Game: nil}, fmt.Errorf("No shipyard in port %s", event.PortID)
+		}
+
+		if !shipyard.HasShip(event.ShipTypeID) {
+			return PurchaseShipResponse{Game: nil}, fmt.Errorf("Ship type %s does not exist in port %s", event.ShipTypeID, event.PortID)
+		}
+
+		shipyard.RemoveShip(event.ShipTypeID)
+		ship := models.NewShip("New ship", event.ShipTypeID)
+		fleet := models.NewFleet("New fleet", playerID, []models.Ship{*ship})
+		game.Players[playerID].MakeTransaction(-currentMap.ShipTypes[event.ShipTypeID].Price)
+		game.Players[playerID].AddFleet(*fleet)
+
+		dependencies.dynamodbClient.UpdateGame(game)
 
 		return PurchaseShipResponse{Game: &game}, nil
 	}

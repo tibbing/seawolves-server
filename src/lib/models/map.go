@@ -11,6 +11,7 @@ type Map struct {
 	PortTypes     map[string]*PortType
 	ResourceTypes map[string]ResourceType
 	FactoryTypes  map[string]FactoryType
+	ShipTypes     map[string]ShipType
 }
 
 // NewMap Creates a new map
@@ -22,6 +23,7 @@ func NewMap(name string, width, height int) *Map {
 		PortTypes:     map[string]*PortType{},
 		ResourceTypes: map[string]ResourceType{},
 		FactoryTypes:  map[string]FactoryType{},
+		ShipTypes:     map[string]ShipType{},
 	}
 	result.SetID(name)
 	return result
@@ -32,7 +34,7 @@ func (x *Map) GetID() string {
 	return x.Name
 }
 
-// AddPortType Adds a port
+// AddPortType Adds a port type
 func (x *Map) AddPortType(portType *PortType) {
 	x.PortTypes[portType.GetID()] = portType
 }
@@ -45,6 +47,11 @@ func (x *Map) AddResourceType(resourceType ResourceType) {
 // AddFactoryType Adds a factory type
 func (x *Map) AddFactoryType(factoryType FactoryType) {
 	x.FactoryTypes[factoryType.GetID()] = factoryType
+}
+
+// AddShipType Adds a ship type
+func (x *Map) AddShipType(shipType ShipType) {
+	x.ShipTypes[shipType.GetID()] = shipType
 }
 
 // GetPorts Lists all ports

@@ -47,7 +47,7 @@ func (x *Game) GetID() string {
 
 // AddPort Adds a port to the game
 func (x *Game) AddPort(port *Port) error {
-	x.Ports[port.PortTypeID] = port
+	x.Ports[port.GetID()] = port
 	return nil
 }
 
