@@ -6,6 +6,7 @@ type Player struct {
 	Name   string
 	Type   PlayerType
 	Day    int
+	Gold   int
 	Fleets []Fleet
 }
 
@@ -15,6 +16,7 @@ func NewPlayer(name string, playerType PlayerType) *Player {
 		Name:   name,
 		Type:   playerType,
 		Day:    0,
+		Gold:   10000,
 		Fleets: []Fleet{},
 	}
 	result.SetID(name)
