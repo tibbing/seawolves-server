@@ -32,7 +32,7 @@ func NewGame(mapID string, players []Player) *Game {
 
 	playersMap := make(map[string]*Player)
 	for _, player := range players {
-		log.Infof("Adding player %s to game %s", player.GetID(), result.GetID())
+		log.Infof("Adding player %s with ID %s to game %s", player.Name, player.GetID(), result.GetID())
 		playersMap[player.GetID()] = &player
 	}
 	result.Players = playersMap

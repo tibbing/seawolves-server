@@ -1,10 +1,10 @@
 package main
 
 import (
+	"apigw"
 	"dynamodb"
 	"errors"
 	"fmt"
-	"lambda"
 	"maps"
 	"models"
 	"strings"
@@ -13,7 +13,7 @@ import (
 
 func getNewMockedGame() models.Game {
 	currentmap, _ := maps.GetMapByID("Scandinavia")
-	player := models.NewPlayer("Player1", models.Human)
+	player := models.NewPlayer("Player1", "Player1", models.Human)
 	game := *models.NewGame(currentmap.GetID(), []models.Player{*player})
 	port := models.NewPort("Stockholm", "")
 	factory := models.NewFactory(currentmap, "GoldMine", "Stockholm", 0.7, 0, player.GetID())
@@ -24,7 +24,7 @@ func getNewMockedGame() models.Game {
 
 func makeRequest(event UpdateGameEvent, mockGameState models.Game) (UpdateGameResponse, error) {
 	var responseTyped UpdateGameResponse
-	req := lambda.GetTestRequest(event)
+	req := apigw.GetTestRequest(event, "Player1")
 	dependencies := &Dependencies{
 		dynamodbClient: dynamodb.DBInstance{
 			Client: dynamodb.MockedClient{MockedResponse: dynamodb.ToGetItemOutput(mockGameState)},
@@ -45,9 +45,8 @@ func makeRequest(event UpdateGameEvent, mockGameState models.Game) (UpdateGameRe
 }
 func TestUpdateDay1(t *testing.T) {
 	event := UpdateGameEvent{
-		GameID:   "TestGame",
-		PlayerID: "Player1",
-		Day:      1,
+		GameID: "TestGame",
+		Day:    1,
 	}
 	response, err := makeRequest(event, getNewMockedGame())
 	if err != nil {
@@ -63,9 +62,8 @@ func TestUpdateDay1(t *testing.T) {
 
 func TestUpdateDay30(t *testing.T) {
 	event := UpdateGameEvent{
-		GameID:   "TestGame",
-		PlayerID: "Player1",
-		Day:      30,
+		GameID: "TestGame",
+		Day:    30,
 	}
 	response, err := makeRequest(event, getNewMockedGame())
 	if err != nil {
@@ -81,9 +79,8 @@ func TestUpdateDay30(t *testing.T) {
 
 func TestUpdatePreviousDay(t *testing.T) {
 	event := UpdateGameEvent{
-		GameID:   "TestGame",
-		PlayerID: "Player1",
-		Day:      20,
+		GameID: "TestGame",
+		Day:    20,
 	}
 
 	gameState := getNewMockedGame()

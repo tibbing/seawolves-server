@@ -1,15 +1,15 @@
 package main
 
 import (
+	"apigw"
 	"dynamodb"
 	"errors"
-	"lambda"
 	"testing"
 )
 
 func makeRequest(event NewGameEvent) (NewGameResponse, error) {
 	var responseTyped NewGameResponse
-	req := lambda.GetTestRequest(event)
+	req := apigw.GetTestRequest(event, "Player1")
 	dependencies := &Dependencies{
 		dynamodbClient: dynamodb.DBInstance{
 			Client: dynamodb.MockedClient{},
@@ -31,9 +31,9 @@ func makeRequest(event NewGameEvent) (NewGameResponse, error) {
 
 func TestCreateNewGame(t *testing.T) {
 	event := NewGameEvent{
-		MapID:   "Scandinavia",
-		Players: []string{"Player1", "Player2"},
-		NumAI:   2,
+		MapID:      "Scandinavia",
+		PlayerName: "Player1",
+		NumAI:      2,
 	}
 	response, err := makeRequest(event)
 	if err != nil {
@@ -41,8 +41,8 @@ func TestCreateNewGame(t *testing.T) {
 		return
 	}
 
-	if len(response.Game.Players) != 4 {
-		t.Errorf("Expected 4 players, but got %v", len(response.Game.Players))
+	if len(response.Game.Players) != 3 {
+		t.Errorf("Expected 3 players, but got %v", len(response.Game.Players))
 		return
 	}
 }

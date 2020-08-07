@@ -114,6 +114,22 @@
       "userAgent": "Custom User Agent String",
       "user": null
     },
+    "authorizer": {
+      "claims": {
+        "sub": "00000000-0000-0000-0000-000000000000",
+        "iss": "https://",
+        "cognito:username": "00000000-0000-0000-0000-000000000000",
+        "given_name": "John",
+        "family_name": "Doe",
+        "aud": "",
+        "event_id": "00000000-0000-0000-0000-000000000000",
+        "token_use": "id",
+        "auth_time": "1567082915",
+        "exp": "Mon Sep 09 15:25:42 UTC 2019",
+        "iat": "Mon Sep 09 14:25:42 UTC 2019",
+        "email": "foo@bar.com"
+      }
+    },
     "path": "/prod/path/to/resource",
     "resourcePath": "/{proxy+}",
     "httpMethod": "POST",

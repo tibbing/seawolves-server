@@ -1,6 +1,7 @@
 package main
 
 import (
+	"apigw"
 	"context"
 	"dynamodb"
 	"encoding/json"
@@ -29,9 +30,8 @@ func init() {
 
 // UpdateGameEvent lambda event
 type UpdateGameEvent struct {
-	PlayerID string
-	GameID   string
-	Day      int
+	GameID string
+	Day    int
 }
 
 // UpdateGameResponse lambda response
@@ -62,7 +62,12 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 			return UpdateGameResponse{Game: nil}, err
 		}
 
-		err = game.UpdateForPlayer(&currentmap, event.PlayerID, event.Day)
+		playerID, err := apigw.GetUserID(request)
+		if err != nil {
+			return UpdateGameResponse{Game: nil}, err
+		}
+
+		err = game.UpdateForPlayer(&currentmap, playerID, event.Day)
 		if err != nil {
 			return UpdateGameResponse{Game: nil}, err
 		}

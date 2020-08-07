@@ -11,7 +11,7 @@ type Player struct {
 }
 
 // NewPlayer Creates a new player
-func NewPlayer(name string, playerType PlayerType) *Player {
+func NewPlayer(name, id string, playerType PlayerType) *Player {
 	result := &Player{
 		Name:   name,
 		Type:   playerType,
@@ -19,7 +19,7 @@ func NewPlayer(name string, playerType PlayerType) *Player {
 		Gold:   10000,
 		Fleets: []Fleet{},
 	}
-	result.SetID(name)
+	result.SetID(id)
 	return result
 }
 

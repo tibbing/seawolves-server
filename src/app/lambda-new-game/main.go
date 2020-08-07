@@ -1,6 +1,7 @@
 package main
 
 import (
+	"apigw"
 	"context"
 	"dynamodb"
 	"encoding/json"
@@ -29,9 +30,9 @@ func init() {
 
 // NewGameEvent lambda event
 type NewGameEvent struct {
-	Players []string
-	MapID   string
-	NumAI   int
+	PlayerName string
+	MapID      string
+	NumAI      int
 }
 
 // NewGameResponse lambda response
@@ -59,16 +60,19 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 			return NewGameResponse{Game: nil}, fmt.Errorf("Invalid number of AI players: %v", event.NumAI)
 		}
 
-		if len(event.Players) < 1 || len(event.Players) > 3 {
-			return NewGameResponse{Game: nil}, fmt.Errorf("Invalid number of Human players: %v", len(event.Players))
+		if event.PlayerName == "" || len(event.PlayerName) > 20 {
+			return NewGameResponse{Game: nil}, fmt.Errorf("Invalid player name: %v", event.PlayerName)
 		}
 
-		players := make([]models.Player, len(event.Players)+event.NumAI)
-		for i, playerID := range event.Players {
-			players[i] = *models.NewPlayer(playerID, models.Human)
+		userID, err := apigw.GetUserID(request)
+		if err != nil {
+			return NewGameResponse{Game: nil}, err
 		}
+
+		players := make([]models.Player, 1+event.NumAI)
+		players[0] = *models.NewPlayer(event.PlayerName, userID, models.Human)
 		for i := 0; i < event.NumAI; i++ {
-			players[i+len(event.Players)] = *models.NewPlayer(fmt.Sprintf("Ai%v", i), models.AI)
+			players[i+1] = *models.NewPlayer(fmt.Sprintf("Ai%v", i), fmt.Sprintf("Ai%v", i), models.AI)
 		}
 		game := *models.NewGame(currentmap.GetID(), players)
 
