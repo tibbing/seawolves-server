@@ -5,10 +5,22 @@ import (
 	"errors"
 	"fmt"
 	"lambda"
+	"maps"
 	"models"
 	"strings"
 	"testing"
 )
+
+func getNewMockedGame() models.Game {
+	currentmap, _ := maps.GetMapByID("Scandinavia")
+	player := models.NewPlayer("Player1", models.Human)
+	game := *models.NewGame(currentmap.GetID(), []models.Player{*player})
+	port := models.NewPort("Stockholm", "")
+	factory := models.NewFactory(currentmap, "GoldMine", "Stockholm", 0.7, 0, player.GetID())
+	port.AddFactory(*factory)
+	game.AddPort(port)
+	return game
+}
 
 func makeRequest(event UpdateGameEvent, mockGameState models.Game) (UpdateGameResponse, error) {
 	var responseTyped UpdateGameResponse
