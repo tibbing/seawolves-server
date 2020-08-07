@@ -4,7 +4,7 @@ import (
 	"context"
 	"dynamodb"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"http-handler"
 	"maps"
 	"models"
@@ -16,7 +16,7 @@ import (
 	"github.com/op/go-logging"
 )
 
-var log = logging.MustGetLogger("update:game")
+var log = logging.MustGetLogger("new:game")
 var format = logging.MustStringFormatter(
 	`%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x} ▶ %{message}`,
 )
@@ -27,15 +27,15 @@ func init() {
 	logging.SetBackend(backendFormatter)
 }
 
-// UpdateGameEvent lambda event
-type UpdateGameEvent struct {
-	PlayerID string
-	GameID   string
-	Day      int
+// NewGameEvent lambda event
+type NewGameEvent struct {
+	Players []string
+	MapID   string
+	NumAI   int
 }
 
-// UpdateGameResponse lambda response
-type UpdateGameResponse struct {
+// NewGameResponse lambda response
+type NewGameResponse struct {
 	Game *models.Game
 }
 
@@ -47,29 +47,34 @@ type Dependencies struct {
 // CreateHandler creates the event handler
 func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayProxyRequest) (interface{}, error) {
 	return func(request events.APIGatewayProxyRequest) (interface{}, error) {
-		var event UpdateGameEvent
+		var event NewGameEvent
 		json.Unmarshal([]byte(request.Body), &event)
 
-		game, err := dependencies.dynamodbClient.GetGameByID(event.GameID)
+		currentmap, err := maps.GetMapByID(event.MapID)
 		if err != nil {
-			return UpdateGameResponse{Game: nil}, err
-		}
-		if game.ID == "" {
-			return UpdateGameResponse{Game: nil}, errors.New("Invalid game: " + event.GameID)
-		}
-		currentmap, err := maps.GetMapByID(game.MapID)
-		if err != nil {
-			return UpdateGameResponse{Game: nil}, err
+			return NewGameResponse{Game: nil}, err
 		}
 
-		err = game.UpdateForPlayer(&currentmap, event.PlayerID, event.Day)
-		if err != nil {
-			return UpdateGameResponse{Game: nil}, err
+		if event.NumAI < 0 || event.NumAI > 3 {
+			return NewGameResponse{Game: nil}, fmt.Errorf("Invalid number of AI players: %v", event.NumAI)
 		}
+
+		if len(event.Players) < 1 || len(event.Players) > 3 {
+			return NewGameResponse{Game: nil}, fmt.Errorf("Invalid number of Human players: %v", len(event.Players))
+		}
+
+		players := make([]models.Player, len(event.Players)+event.NumAI)
+		for i, playerID := range event.Players {
+			players[i] = *models.NewPlayer(playerID, models.Human)
+		}
+		for i := 0; i < event.NumAI; i++ {
+			players[i+len(event.Players)] = *models.NewPlayer(fmt.Sprintf("Ai%v", i), models.AI)
+		}
+		game := *models.NewGame(currentmap.GetID(), players)
 
 		dependencies.dynamodbClient.UpdateGame(game)
 
-		return UpdateGameResponse{Game: &game}, nil
+		return NewGameResponse{Game: &game}, nil
 	}
 }
 

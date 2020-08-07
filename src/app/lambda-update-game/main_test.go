@@ -2,39 +2,17 @@ package main
 
 import (
 	"dynamodb"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"lambda"
 	"models"
-	"os"
 	"strings"
 	"testing"
-
-	"github.com/aws/aws-lambda-go/events"
 )
-
-func getTestRequest(event UpdateGameEvent) events.APIGatewayProxyRequest {
-	jsonFile, err := os.Open("request.json")
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer jsonFile.Close()
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	var req events.APIGatewayProxyRequest
-	json.Unmarshal(byteValue, &req)
-	eventBody, err := json.Marshal(event)
-	if err != nil {
-		fmt.Println(err)
-	}
-	req.Body = string(eventBody)
-
-	return req
-}
 
 func makeRequest(event UpdateGameEvent, mockGameState models.Game) (UpdateGameResponse, error) {
 	var responseTyped UpdateGameResponse
-	req := getTestRequest(event)
+	req := lambda.GetTestRequest(event)
 	dependencies := &Dependencies{
 		dynamodbClient: dynamodb.DBInstance{
 			Client: dynamodb.MockedClient{MockedResponse: dynamodb.ToGetItemOutput(mockGameState)},

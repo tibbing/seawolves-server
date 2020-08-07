@@ -1,5 +1,5 @@
 {
-  "body": "{\"PlayerID\": \"Player1\",\"GameID\": \"test\",\"Day\": 30}",
+  "body": "",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
   "httpMethod": "POST",

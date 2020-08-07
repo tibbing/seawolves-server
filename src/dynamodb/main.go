@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
@@ -28,6 +29,13 @@ func init() {
 // DBInstance the DynamoDB instance
 type DBInstance struct {
 	Client dynamodbiface.DynamoDBAPI
+}
+
+// GetClient returns a DynamoDB client
+func GetClient(config *aws.Config) *dynamodb.DynamoDB {
+	sess := session.Must(session.NewSession(config))
+	client := dynamodb.New(sess)
+	return client
 }
 
 // UpdateGame updates game state in DynamoDB
