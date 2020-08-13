@@ -32,7 +32,6 @@ func init() {
 type PurchaseShipEvent struct {
 	GameID     string
 	ShipTypeID string
-	PlayerID   string
 	PortID     string
 }
 

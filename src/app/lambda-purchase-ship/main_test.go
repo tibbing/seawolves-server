@@ -2,10 +2,12 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"lib/apigw"
 	"lib/dynamodb"
 	"lib/maps"
 	"lib/models"
+	"strings"
 	"testing"
 )
 
@@ -49,7 +51,6 @@ func makeRequest(event PurchaseShipEvent, mockGameState models.Game) (PurchaseSh
 func TestPurchaseShip(t *testing.T) {
 	event := PurchaseShipEvent{
 		GameID:     "TestGame",
-		PlayerID:   "Player1",
 		PortID:     "Stockholm",
 		ShipTypeID: "Brig",
 	}
@@ -81,6 +82,20 @@ func TestPurchaseShip(t *testing.T) {
 
 	if response.Game.Ports["Stockholm"].Shipyard.HasShip("Brig") {
 		t.Errorf("Expected ship to be removed from shipyard")
+		return
+	}
+}
+
+func TestPurchaseInvalidPort(t *testing.T) {
+	event := PurchaseShipEvent{
+		GameID:     "TestGame",
+		PortID:     "Invalid",
+		ShipTypeID: "Brig",
+	}
+
+	_, err := makeRequest(event, getNewMockedGame())
+	if err == nil || !strings.Contains(fmt.Sprintf("%s", err), "Invalid port") {
+		t.Error("Expected request to fail")
 		return
 	}
 }
