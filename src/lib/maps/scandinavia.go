@@ -11,12 +11,12 @@ func Scandinavia() *models.Map {
 	silver := models.NewResourceType("Silver", 50, 10)
 	result.AddResourceType(silver)
 
-	result.AddFactoryType(models.NewFactoryType("GoldMine", gold.GetID(), 0.2))
-	result.AddFactoryType(models.NewFactoryType("SilverMine", silver.GetID(), 0.3))
+	result.AddFactoryType(models.NewFactoryType("GoldMine", gold.GetID(), 0.2, 800))
+	result.AddFactoryType(models.NewFactoryType("SilverMine", silver.GetID(), 0.3, 500))
 
-	stockholm := models.NewPortType("Stockholm", models.NewPosition(200, 100))
+	stockholm := models.NewPortType("Stockholm", models.NewPosition(200, 100), 1.2)
 	result.AddPortType(stockholm)
-	goteborg := models.NewPortType("Göteborg", models.NewPosition(140, 100))
+	goteborg := models.NewPortType("Göteborg", models.NewPosition(140, 100), 1.1)
 	result.AddPortType(goteborg)
 
 	result.AddShipType(models.NewShipType("Brig", 30, 200, 80, 300))

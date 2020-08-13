@@ -6,14 +6,16 @@ type FactoryType struct {
 	Name                    string
 	ResourceTypeID          string
 	ProductionSpeedModifier float32
+	BasePrice               int
 }
 
 // NewFactoryType Creates a new factory type
-func NewFactoryType(name string, resourceTypeID string, productionSpeedModifier float32) FactoryType {
+func NewFactoryType(name string, resourceTypeID string, productionSpeedModifier float32, basePrice int) FactoryType {
 	result := FactoryType{
 		Name:                    name,
 		ResourceTypeID:          resourceTypeID,
 		ProductionSpeedModifier: productionSpeedModifier,
+		BasePrice:               basePrice,
 	}
 	result.SetID(name)
 	return result

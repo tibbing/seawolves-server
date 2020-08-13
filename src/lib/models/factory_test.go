@@ -8,8 +8,8 @@ func testMap() *Map {
 	result := NewMap("Test", 1000, 1000)
 	gold := NewResourceType("Gold", 100, 10)
 	result.AddResourceType(gold)
-	result.AddFactoryType(NewFactoryType("GoldMine", gold.GetID(), 0.2))
-	port1 := NewPortType("Port1", NewPosition(200, 100))
+	result.AddFactoryType(NewFactoryType("GoldMine", gold.GetID(), 0.2, 500))
+	port1 := NewPortType("Port1", NewPosition(200, 100), 1)
 	result.AddPortType(port1)
 	return result
 }
