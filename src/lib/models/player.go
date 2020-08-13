@@ -35,6 +35,11 @@ func (u *Player) MakeTransaction(amount int) error {
 	if u.Gold+amount < 0 {
 		return fmt.Errorf("Player %s cannot afford %v, has %v", u.GetID(), amount, u.Gold)
 	}
+	if amount > 0 {
+		log.Infof("Adding %v gold to player %s, balance before: %v, balance after: %v", amount, u.GetID(), u.Gold, u.Gold+amount)
+	} else {
+		log.Infof("Deducting %v gold from player %s, balance before: %v, balance after: %v", amount, u.GetID(), u.Gold, u.Gold+amount)
+	}
 	u.Gold += amount
 	return nil
 }

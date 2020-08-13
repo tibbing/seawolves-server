@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/op/go-logging"
@@ -24,9 +25,10 @@ func init() {
 
 // GetTestRequest returns a valid API Gateway request with given event as body
 func GetTestRequest(event interface{}, userID string) events.APIGatewayProxyRequest {
-	jsonFile, err := os.Open("../../apigw/request.json")
+	absPath, _ := filepath.Abs("/go/src/lib/apigw/request.json")
+	jsonFile, err := os.Open(absPath)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
