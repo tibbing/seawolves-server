@@ -78,11 +78,24 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 			return PurchaseFactoryResponse{Game: nil}, fmt.Errorf("Invalid port: %s", event.PortID)
 		}
 
+		if !currentMap.HasFactoryType(event.FactoryTypeID) {
+			return PurchaseFactoryResponse{Game: nil}, fmt.Errorf("Invalid factory type: %s", event.FactoryTypeID)
+		}
+		factoryType := currentMap.FactoryTypes[event.FactoryTypeID]
 		portType := currentMap.PortTypes[port.PortTypeID]
 
 		priceModifier := (float64(len(port.Factories)) / float64(portType.FactoryLocations)) + portType.FactoryPriceModifier
-		price := float64(currentMap.FactoryTypes[event.FactoryTypeID].BasePrice) * priceModifier
+		price := float64(factoryType.BasePrice) * priceModifier
 		game.Players[playerID].MakeTransaction(-int(math.Round(price)))
+
+		for _, factory := range port.Factories {
+			if factory.LocationID == event.LocationID {
+				return PurchaseFactoryResponse{Game: nil}, fmt.Errorf("LocationID %v in port %s is already taken", event.LocationID, event.PortID)
+			}
+		}
+
+		factory := models.NewFactory(currentMap, event.FactoryTypeID, event.PortID, 0.7, event.LocationID, playerID)
+		port.AddFactory(*factory)
 
 		dependencies.dynamodbClient.UpdateGame(game)
 

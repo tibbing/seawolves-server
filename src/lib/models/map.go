@@ -63,6 +63,18 @@ func (x *Map) GetPorts() []string {
 	return keys
 }
 
+// HasFactoryType returns true if valid factory type for this map
+func (x *Map) HasFactoryType(factoryTypeID string) bool {
+	factoryType := x.FactoryTypes[factoryTypeID]
+	return factoryType.GetID() != ""
+}
+
+// HasPortType returns true if valid port type for this map
+func (x *Map) HasPortType(portTypeID string) bool {
+	portType := x.PortTypes[portTypeID]
+	return portType.GetID() != ""
+}
+
 // GetResourceTypes Lists all resource types
 func (x *Map) GetResourceTypes() []string {
 	keys := make([]string, 0, len(x.ResourceTypes))

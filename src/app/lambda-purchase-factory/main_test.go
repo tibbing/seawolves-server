@@ -6,6 +6,7 @@ import (
 	"lib/dynamodb"
 	"lib/maps"
 	"lib/models"
+	"testing"
 )
 
 func getNewMockedGame() models.Game {
@@ -43,4 +44,38 @@ func makeRequest(event PurchaseFactoryEvent, mockGameState models.Game) (Purchas
 	}
 
 	return responseTyped, nil
+}
+
+func TestPurchaseFactory(t *testing.T) {
+	event := PurchaseFactoryEvent{
+		GameID:        "TestGame",
+		PortID:        "Stockholm",
+		FactoryTypeID: "GoldMine",
+		LocationID:    1,
+	}
+
+	response, err := makeRequest(event, getNewMockedGame())
+	if err != nil {
+		t.Errorf("Request failed: %s", err.Error())
+		return
+	}
+
+	factories := response.Game.Ports["Stockholm"].Factories
+	if len(factories) != 2 {
+		t.Errorf("Factory was not created")
+		return
+	}
+
+	if factories[0].OwnerID != "Player1" {
+		t.Errorf("Invalid owner")
+		return
+	}
+
+	goldBefore := getNewMockedGame().Players["Player1"].Gold
+	goldAfter := response.Game.Players["Player1"].Gold
+
+	if goldAfter >= goldBefore {
+		t.Errorf("Gold has not been deducted")
+		return
+	}
 }
