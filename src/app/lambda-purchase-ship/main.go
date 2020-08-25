@@ -60,11 +60,11 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		playerID, err := apigw.GetUserID(request)
 		if err != nil {
-			return PurchaseShipResponse{Game: nil}, err
+			return response, err
 		}
 
 		if game.ID == "" {
-			return PurchaseShipResponse{Game: nil}, fmt.Errorf("Invalid game: %s", event.GameID)
+			return response, fmt.Errorf("Invalid game: %s", event.GameID)
 		}
 		currentMap, err := maps.GetMapByID(game.MapID)
 		if err != nil {
@@ -73,16 +73,16 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		port := game.Ports[event.PortID]
 		if port == nil {
-			return PurchaseShipResponse{Game: nil}, fmt.Errorf("Invalid port: %s", event.PortID)
+			return response, fmt.Errorf("Invalid port: %s", event.PortID)
 		}
 
 		shipyard := port.Shipyard
 		if shipyard == nil {
-			return PurchaseShipResponse{Game: nil}, fmt.Errorf("No shipyard in port %s", event.PortID)
+			return response, fmt.Errorf("No shipyard in port %s", event.PortID)
 		}
 
 		if !shipyard.HasShip(event.ShipTypeID) {
-			return PurchaseShipResponse{Game: nil}, fmt.Errorf("Ship type %s does not exist in port %s", event.ShipTypeID, event.PortID)
+			return response, fmt.Errorf("Ship type %s does not exist in port %s", event.ShipTypeID, event.PortID)
 		}
 
 		shipyard.RemoveShip(event.ShipTypeID)
@@ -93,7 +93,8 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		dependencies.dynamodbClient.UpdateGame(game)
 
-		return PurchaseShipResponse{Game: &game}, nil
+		response = PurchaseShipResponse{Game: &game}
+		return response, nil
 	}
 }
 

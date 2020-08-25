@@ -51,22 +51,24 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 		var event NewGameEvent
 		json.Unmarshal([]byte(request.Body), &event)
 
+		response := NewGameResponse{Game: nil}
+
 		currentmap, err := maps.GetMapByID(event.MapID)
 		if err != nil {
-			return NewGameResponse{Game: nil}, err
+			return response, err
 		}
 
 		if event.NumAI < 0 || event.NumAI > 3 {
-			return NewGameResponse{Game: nil}, fmt.Errorf("Invalid number of AI players: %v", event.NumAI)
+			return response, fmt.Errorf("Invalid number of AI players: %v", event.NumAI)
 		}
 
 		if event.PlayerName == "" || len(event.PlayerName) > 20 {
-			return NewGameResponse{Game: nil}, fmt.Errorf("Invalid player name: %v", event.PlayerName)
+			return response, fmt.Errorf("Invalid player name: %v", event.PlayerName)
 		}
 
 		userID, err := apigw.GetUserID(request)
 		if err != nil {
-			return NewGameResponse{Game: nil}, err
+			return response, err
 		}
 
 		players := make([]models.Player, 1+event.NumAI)
@@ -78,7 +80,8 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		dependencies.dynamodbClient.UpdateGame(game)
 
-		return NewGameResponse{Game: &game}, nil
+		response = NewGameResponse{Game: &game}
+		return response, nil
 	}
 }
 

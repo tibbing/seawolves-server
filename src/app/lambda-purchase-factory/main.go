@@ -62,11 +62,11 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		playerID, err := apigw.GetUserID(request)
 		if err != nil {
-			return PurchaseFactoryResponse{Game: nil}, err
+			return response, err
 		}
 
 		if game.ID == "" {
-			return PurchaseFactoryResponse{Game: nil}, fmt.Errorf("Invalid game: %s", event.GameID)
+			return response, fmt.Errorf("Invalid game: %s", event.GameID)
 		}
 		currentMap, err := maps.GetMapByID(game.MapID)
 		if err != nil {
@@ -75,11 +75,11 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		port := game.Ports[event.PortID]
 		if port == nil {
-			return PurchaseFactoryResponse{Game: nil}, fmt.Errorf("Invalid port: %s", event.PortID)
+			return response, fmt.Errorf("Invalid port: %s", event.PortID)
 		}
 
 		if !currentMap.HasFactoryType(event.FactoryTypeID) {
-			return PurchaseFactoryResponse{Game: nil}, fmt.Errorf("Invalid factory type: %s", event.FactoryTypeID)
+			return response, fmt.Errorf("Invalid factory type: %s", event.FactoryTypeID)
 		}
 		factoryType := currentMap.FactoryTypes[event.FactoryTypeID]
 		portType := currentMap.PortTypes[port.PortTypeID]
@@ -90,7 +90,7 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		for _, factory := range port.Factories {
 			if factory.LocationID == event.LocationID {
-				return PurchaseFactoryResponse{Game: nil}, fmt.Errorf("LocationID %v in port %s is already taken", event.LocationID, event.PortID)
+				return response, fmt.Errorf("LocationID %v in port %s is already taken", event.LocationID, event.PortID)
 			}
 		}
 
@@ -99,7 +99,8 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 
 		dependencies.dynamodbClient.UpdateGame(game)
 
-		return PurchaseFactoryResponse{Game: &game}, nil
+		response = PurchaseFactoryResponse{Game: &game}
+		return response, nil
 	}
 }
 

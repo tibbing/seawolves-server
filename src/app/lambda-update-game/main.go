@@ -50,31 +50,34 @@ func CreateHandler(dependencies *Dependencies) func(request events.APIGatewayPro
 		var event UpdateGameEvent
 		json.Unmarshal([]byte(request.Body), &event)
 
+		response := UpdateGameResponse{Game: nil}
+
 		game, err := dependencies.dynamodbClient.GetGameByID(event.GameID)
 		if err != nil {
-			return UpdateGameResponse{Game: nil}, err
+			return response, err
 		}
 		if game.ID == "" {
-			return UpdateGameResponse{Game: nil}, errors.New("Invalid game: " + event.GameID)
+			return response, errors.New("Invalid game: " + event.GameID)
 		}
 		currentmap, err := maps.GetMapByID(game.MapID)
 		if err != nil {
-			return UpdateGameResponse{Game: nil}, err
+			return response, err
 		}
 
 		playerID, err := apigw.GetUserID(request)
 		if err != nil {
-			return UpdateGameResponse{Game: nil}, err
+			return response, err
 		}
 
 		err = game.UpdateForPlayer(&currentmap, playerID, event.Day)
 		if err != nil {
-			return UpdateGameResponse{Game: nil}, err
+			return response, err
 		}
 
 		dependencies.dynamodbClient.UpdateGame(game)
 
-		return UpdateGameResponse{Game: &game}, nil
+		response = UpdateGameResponse{Game: &game}
+		return response, nil
 	}
 }
 
